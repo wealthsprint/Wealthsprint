@@ -15,23 +15,21 @@ jobs:
       - name: Fetch WealthSprint files from Emergent preview
         run: |
           # Fetch index.html
-          curl -L "https://growthsprint.preview.emergentagent.com/index.html" -o index.html
+          curl -L "https://financial-freedom-ai.preview.emergentagent.com/index.html" -o index.html
           
           # Fetch asset manifest
-          curl -L "https://growthsprint.preview.emergentagent.com/asset-manifest.json" -o asset-manifest.json
+          curl -L "https://financial-freedom-ai.preview.emergentagent.com/asset-manifest.json" -o asset-manifest.json
           
           # Create static/js directory
           mkdir -p static/js
           
           # Fetch bundle.js
-          curl -L "https://growthsprint.preview.emergentagent.com/static/js/bundle.js" -o static/js/bundle.js
+          curl -L "https://financial-freedom-ai.preview.emergentagent.com/static/js/bundle.js" -o static/js/bundle.js
           
           # Check if there are CSS files
           mkdir -p static/css
-          curl -L "https://growthsprint.preview.emergentagent.com/static/css/main.css" -o static/css/main.css 2>/dev/null || true
+          curl -L "https://financial-freedom-ai.preview.emergentagent.com/static/css/main.css" -o static/css/main.css 2>/dev/null || true
           
-          # Remove options-specific files if they exist
-          rm -f .nojekyll || true
           touch .nojekyll
 
       - name: Check CNAME exists
@@ -45,5 +43,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff --staged --quiet || git commit -m "Deploy WealthSprint website from Emergent"
+          git diff --staged --quiet || git commit -m "Deploy financial-freedom-ai WealthSprint version"
           git push
