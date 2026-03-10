@@ -1,0 +1,49 @@
+name: Fetch and Deploy WealthSprint from Emergent
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Fetch WealthSprint files from Emergent preview
+        run: |
+          # Fetch index.html
+          curl -L "https://growthsprint.preview.emergentagent.com/index.html" -o index.html
+          
+          # Fetch asset manifest
+          curl -L "https://growthsprint.preview.emergentagent.com/asset-manifest.json" -o asset-manifest.json
+          
+          # Create static/js directory
+          mkdir -p static/js
+          
+          # Fetch bundle.js
+          curl -L "https://growthsprint.preview.emergentagent.com/static/js/bundle.js" -o static/js/bundle.js
+          
+          # Check if there are CSS files
+          mkdir -p static/css
+          curl -L "https://growthsprint.preview.emergentagent.com/static/css/main.css" -o static/css/main.css 2>/dev/null || true
+          
+          # Remove options-specific files if they exist
+          rm -f .nojekyll || true
+          touch .nojekyll
+
+      - name: Check CNAME exists
+        run: |
+          if [ ! -f CNAME ]; then
+            echo "wealthsprint.in" > CNAME
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff --staged --quiet || git commit -m "Deploy WealthSprint website from Emergent"
+          git push
